@@ -53,7 +53,7 @@ namespace CheeseMVC.Controllers
 
         public IActionResult ViewMenu(int id)
         {
-            Menu theMenu = context.Menus.Single(c => c.ID == id);
+            
 
 
             List<CheeseMenu> items = context
@@ -61,6 +61,8 @@ namespace CheeseMVC.Controllers
                 .Include(item => item.Cheese)
                 .Where(cm => cm.MenuID == id)
                 .ToList();
+
+            Menu theMenu = context.Menus.Single(m => m.ID == id);
 
             ViewMenuViewModel viewModel = new ViewMenuViewModel
             {
@@ -73,7 +75,7 @@ namespace CheeseMVC.Controllers
 
         public IActionResult AddItem(int id)
         {
-            Menu theMenu = context.Menus.Single(c => c.ID == id);
+            Menu theMenu = context.Menus.Single(m => m.ID == id);
             List<Cheese> cheeses = context.Cheeses.ToList();
             return View(new AddMenuItemViewModel(theMenu, cheeses));
 
@@ -103,7 +105,7 @@ namespace CheeseMVC.Controllers
                     context.SaveChanges();
                 }
 
-                return Redirect(string.Format("/Menu/ViewMenu/{0}", addMenuItemViewModel.Menu));
+                return Redirect(string.Format("/Menu/ViewMenu/{0}", addMenuItemViewModel.MenuID));
 
 
             }

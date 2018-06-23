@@ -10,6 +10,19 @@ namespace CheeseMVC.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Menus",
                 columns: table => new
                 {
@@ -20,6 +33,27 @@ namespace CheeseMVC.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Menus", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cheeses",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CategoryID = table.Column<int>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cheeses", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Cheeses_Categories_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "Categories",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,6 +84,11 @@ namespace CheeseMVC.Migrations
                 name: "IX_CheeseMenus_MenuID",
                 table: "CheeseMenus",
                 column: "MenuID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cheeses_CategoryID",
+                table: "Cheeses",
+                column: "CategoryID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -58,7 +97,13 @@ namespace CheeseMVC.Migrations
                 name: "CheeseMenus");
 
             migrationBuilder.DropTable(
+                name: "Cheeses");
+
+            migrationBuilder.DropTable(
                 name: "Menus");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }
